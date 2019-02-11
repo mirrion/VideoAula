@@ -10,20 +10,19 @@ using SistemaLoja.Models;
 
 namespace SistemaLoja.Controllers
 {
-    [Authorize(Users ="robsongasper@hotmail.com")]
     public class ProdutoController : Controller
     {
         private SistemaLojaContext db = new SistemaLojaContext();
 
         // GET: Produto
-        [AllowAnonymous]
+        [Authorize(Roles = "View")]
         public ActionResult Index()
         {
             return View(db.Produtoes.ToList());
         }
 
         // GET: Produto/Details/5
-        [AllowAnonymous]
+        [Authorize(Roles = "View")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -39,6 +38,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Create
+        [Authorize(Roles = "Create")]
         public ActionResult Create()
         {
             return View();
@@ -49,6 +49,7 @@ namespace SistemaLoja.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Create")]
         public ActionResult Create([Bind(Include = "ProdutoId,Descricao,Preco,UltimaCompra,Estoque,Comentario")] Produto produto)
         {
             if (ModelState.IsValid)
@@ -62,6 +63,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Edit/5
+        [Authorize(Roles = "Edit")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -81,6 +83,7 @@ namespace SistemaLoja.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Edit")]
         public ActionResult Edit([Bind(Include = "ProdutoId,Descricao,Preco,UltimaCompra,Estoque,Comentario")] Produto produto)
         {
             if (ModelState.IsValid)
@@ -93,6 +96,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Delete/5
+        [Authorize(Roles = "Delete")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -110,6 +114,7 @@ namespace SistemaLoja.Controllers
         // POST: Produto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
             Produto produto = db.Produtoes.Find(id);
