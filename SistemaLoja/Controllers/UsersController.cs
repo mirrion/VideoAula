@@ -12,8 +12,7 @@ namespace SistemaLoja.Controllers
 {
     public class UsersController : Controller
     {
-        private SistemaLojaContext db = new SistemaLojaContext();
-
+        private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Users
         public ActionResult Index()
         {
@@ -32,6 +31,42 @@ namespace SistemaLoja.Controllers
             }
             return View(usersView);
         }
+
+        public ActionResult Roles (string userId)
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var users = userManager.Users.ToList();
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            var roles = roleManager.Roles.ToList();
+            var rolesView = new List<RoleView>();
+
+            var user = users.Find(u => u.Id == userId);
+
+            foreach (var item in user.Roles){
+                var role = roles.Find(r => r.Id == item.RoleId);
+                var roleView = new RoleView
+                {
+                    RoleId = role.Id,
+                    Name = role.Name
+                };
+
+                rolesView.Add(roleView);
+            }
+
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Nome = user.UserName,
+                UserId = user.Id,
+                Roles = rolesView
+            };
+
+            return View(userView);
+
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

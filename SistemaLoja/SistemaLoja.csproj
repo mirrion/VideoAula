@@ -295,6 +295,7 @@
     <Content Include="Views\Ordens\NovaOrdem.cshtml" />
     <Content Include="Views\Ordens\AddProduto.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\Roles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
