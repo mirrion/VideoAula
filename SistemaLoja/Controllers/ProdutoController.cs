@@ -36,6 +36,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -46,6 +47,7 @@ namespace SistemaLoja.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "ProdutoId,Descricao,Preco,UltimaCompra,Estoque,Comentario")] Produto produto)
         {
             if (ModelState.IsValid)
@@ -59,6 +61,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -78,6 +81,7 @@ namespace SistemaLoja.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "ProdutoId,Descricao,Preco,UltimaCompra,Estoque,Comentario")] Produto produto)
         {
             if (ModelState.IsValid)
@@ -90,6 +94,7 @@ namespace SistemaLoja.Controllers
         }
 
         // GET: Produto/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -107,6 +112,7 @@ namespace SistemaLoja.Controllers
         // POST: Produto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
             Produto produto = db.Produtoes.Find(id);
