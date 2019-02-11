@@ -22,6 +22,7 @@ namespace SistemaLoja
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<Models.SistemaLojaContext, Migrations.Configuration>());
             ApplicationDbContext db = new ApplicationDbContext();
             CriarRoles(db);
+            CriarSuperUser(db);
             db.Dispose();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
@@ -30,9 +31,46 @@ namespace SistemaLoja
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
+        private void CriarSuperUser(ApplicationDbContext db)
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var user = userManager.FindByName("robsongasper@hotmail.com");
+
+            if(user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = "robsongasper@hotmail.com",
+                    Email = "robsongasper@hotmail.com"
+                };
+
+                userManager.Create(user, "A@123Hugo");
+            }
+        }
+
         private void CriarRoles(ApplicationDbContext db)
         {
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+
+            if (!roleManager.RoleExists("View"))
+            {
+                roleManager.Create(new IdentityRole("View"));
+            }
+
+            if (!roleManager.RoleExists("Create"))
+            {
+                roleManager.Create(new IdentityRole("Create"));
+            }
+
+            if (!roleManager.RoleExists("Edit"))
+            {
+                roleManager.Create(new IdentityRole("Edit"));
+            }
+
+            if (!roleManager.RoleExists("Delete"))
+            {
+                roleManager.Create(new IdentityRole("Delete"));
+            }
         }
     }
 }
