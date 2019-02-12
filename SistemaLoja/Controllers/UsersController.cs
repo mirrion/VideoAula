@@ -5,6 +5,7 @@ using SistemaLoja.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -147,6 +148,52 @@ namespace SistemaLoja.Controllers
                 Roles = rolesView
             };
             
+            return View("Roles", userView);
+        }
+
+        public ActionResult Delete(string userId, string roleId)
+        {
+            if(string.IsNullOrEmpty(userId)|| string.IsNullOrEmpty(roleId))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var user = userManager.Users.ToList().Find(r => r.Id == userId);
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            var role = roleManager.Roles.ToList().Find(r => r.Id == roleId);
+
+            if(userManager.IsInRole(user.Id, role.Name))
+            {
+                userManager.RemoveFromRole(userId, role.Name);
+            }
+
+            var users = userManager.Users.ToList();
+            var roles = roleManager.Roles.ToList();
+            var rolesView = new List<RoleView>();
+
+            foreach (var item in user.Roles)
+            {
+                role = roles.Find(r => r.Id == item.RoleId);
+                var roleView = new RoleView
+                {
+                    RoleId = role.Id,
+                    Name = role.Name
+                };
+
+                rolesView.Add(roleView);
+            }
+
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Nome = user.UserName,
+                UserId = user.Id,
+                Roles = rolesView
+            };
+
             return View("Roles", userView);
         }
 
