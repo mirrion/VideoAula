@@ -5,22 +5,31 @@
 
 <h4>Permissões do Usuário - @Model.Nome </h4>
 
-<p>
-    @Html.ActionLink("Nova Permissão", "AddRole", new { userId = Model.UserId }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Voltar", "Index", new { }, new { @class = "btn btn-info" })
-</p>
-<table class="table">
+<h2>Nova Ordem</h2>
+<h5>@ViewBag.Error</h5>
+<h5>@ViewBag.Mensagem</h5>
 
-    @for (int i = 0; i < Model.Roles.Count; i++)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Roles[i].Name)
-            </td>
-            <td>
-                @Html.ActionLink("Excluir", "Delete", new { user = Model, roleId = Model.Roles[i].RoleId })
-            </td>
-        </tr>
-    }
+@using (Html.BeginForm("AddRole", "Users", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
 
-</table>
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Role.RoleId, "Permissões", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("RoleId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Role.RoleId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.ActionLink("Voltar", "Roles", new {userId = Model.UserId}, new { @class = "btn btn-primary" })
+
+
+
+        <input type="submit" value="Add Permissão" id="AddRole" class="btn btn-success" />
+
+
+
+    </div>
+}

@@ -79,6 +79,13 @@ namespace SistemaLoja.Controllers
                 Nome = user.UserName,
                 UserId = user.Id
             };
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            var list = roleManager.Roles.ToList();
+            list.Add(new IdentityRole { Id = "", Name = "[Selecione um Permissão!]" });
+            list = list.OrderBy(c => c.Name).ToList();
+            ViewBag.RoleId = new SelectList(list, "Id", "Name");
+
             return View(userView);
         }
 
