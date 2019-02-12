@@ -1,7 +1,24 @@
-﻿
+﻿@model SistemaLoja.ViewModels.UserView
 @{
     ViewBag.Title = "Roles";
 }
 
-<h2>Roles</h2>
+<h4>Configurações de Permissões - Usuário - @Model.Nome </h4>
 
+<p>
+    @Html.ActionLink("Nova Permissão", "AddRole", new { user = Model })
+</p>
+<table class="table">
+   
+    @for(int i = 0; i < Model.Roles.Count; i++) { 
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Roles[i].Name)
+            </td>
+            <td>
+                @Html.ActionLink("Excluir", "Delete", new { id = item.ProdutoId })
+            </td>
+        </tr>
+    }
+
+</table>
