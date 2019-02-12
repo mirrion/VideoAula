@@ -19,7 +19,7 @@ namespace SistemaLoja.Controllers
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             var users = userManager.Users.ToList();
             var usersView = new List<UserView>();
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 var userView = new UserView
                 {
@@ -32,18 +32,19 @@ namespace SistemaLoja.Controllers
             return View(usersView);
         }
 
-        public ActionResult Roles (string userId)
+        public ActionResult Roles(string userId)
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             var users = userManager.Users.ToList();
-            
+
             var user = users.Find(u => u.Id == userId);
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
             var roles = roleManager.Roles.ToList();
             var rolesView = new List<RoleView>();
 
-            foreach (var item in user.Roles){
+            foreach (var item in user.Roles)
+            {
                 var role = roles.Find(r => r.Id == item.RoleId);
                 var roleView = new RoleView
                 {
@@ -87,6 +88,66 @@ namespace SistemaLoja.Controllers
             ViewBag.RoleId = new SelectList(list, "Id", "Name");
 
             return View(userView);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddRole(string userId, FormCollection form)
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var users = userManager.Users.ToList();
+            var user = users.Find(u => u.Id == userId);
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Nome = user.UserName,
+                UserId = user.Id
+            };
+
+            var roleId = Request["RoleId"];
+            if (string.IsNullOrEmpty(roleId))
+            {
+                var list = roleManager.Roles.ToList();
+                list.Add(new IdentityRole { Id = "", Name = "[Selecione um Permissão!]" });
+                list = list.OrderBy(c => c.Name).ToList();
+                ViewBag.RoleId = new SelectList(list, "Id", "Name");
+                ViewBag.Error = "Você precisa selecionar uma permissão!!";
+                return View(userView);
+            }
+            var roles = roleManager.Roles.ToList();
+            var role = roles.Find(r => r.Id == roleId);
+
+            if (!userManager.IsInRole(userId, role.Name))
+            {
+                userManager.AddToRole(userId, role.Name);
+            }
+
+            var rolesView = new List<RoleView>();
+
+            foreach (var item in user.Roles)
+            {
+                role = roles.Find(r => r.Id == item.RoleId);
+                var roleView = new RoleView
+                {
+                    RoleId = role.Id,
+                    Name = role.Name
+                };
+
+                rolesView.Add(roleView);
+            }
+
+
+            userView = new UserView
+            {
+                Email = user.Email,
+                Nome = user.UserName,
+                UserId = user.Id,
+                Roles = rolesView
+            };
+            
+            return View("Roles", userView);
         }
 
         protected override void Dispose(bool disposing)

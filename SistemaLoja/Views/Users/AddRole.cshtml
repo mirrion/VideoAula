@@ -9,7 +9,7 @@
 <h5>@ViewBag.Error</h5>
 <h5>@ViewBag.Mensagem</h5>
 
-@using (Html.BeginForm("AddRole", "Users", FormMethod.Post))
+@using (Html.BeginForm("AddRole", "Users", new { userId = Model.UserId }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
