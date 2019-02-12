@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace SistemaLoja.Controllers
 {
+    [Authorize(Users ="robsongasper@hotmail.com")]
     public class UsersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
