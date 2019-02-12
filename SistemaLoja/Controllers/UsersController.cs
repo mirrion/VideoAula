@@ -36,12 +36,12 @@ namespace SistemaLoja.Controllers
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             var users = userManager.Users.ToList();
+            
+            var user = users.Find(u => u.Id == userId);
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
             var roles = roleManager.Roles.ToList();
             var rolesView = new List<RoleView>();
-
-            var user = users.Find(u => u.Id == userId);
 
             foreach (var item in user.Roles){
                 var role = roles.Find(r => r.Id == item.RoleId);
@@ -65,6 +65,21 @@ namespace SistemaLoja.Controllers
 
             return View(userView);
 
+        }
+        public ActionResult AddRole(string userId)
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var users = userManager.Users.ToList();
+
+            var user = users.Find(u => u.Id == userId);
+
+            var userView = new UserView
+            {
+                Email = user.Email,
+                Nome = user.UserName,
+                UserId = user.Id
+            };
+            return View(userView);
         }
 
         protected override void Dispose(bool disposing)
