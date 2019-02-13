@@ -36,6 +36,7 @@ namespace SistemaLoja.Models
 
         [JsonIgnore]
         public virtual ICollection<FornecedorProduto> FornecedorProduto { get; set; }
+
         [JsonIgnore]
         public virtual ICollection<OrdemDetalhe> OrdensDetalhes { get; set; }
     }
