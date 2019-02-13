@@ -27,10 +27,7 @@ namespace SistemaLoja.Controllers
         public IHttpActionResult GetCategoria(int id)
         {
             Categoria categoria = db.Categorias.Find(id);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
+           
 
             return Ok(categoria);
         }

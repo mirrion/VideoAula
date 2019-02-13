@@ -56,6 +56,36 @@
 
             $("#btnGetCategoria").on("click", function () {
 
+                var categoriaId = $('#txtCategoriaId').val()
+                if (categoriaId == "") {
+                    $("#lblMensagem").html("É preciso informar um id para Categoria");
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/CategoriasAPI/' + categoriaId,
+                    datatype: 'json',
+                    cache: false,
+                })
+
+
+                    .success(function (data) {
+                        if (data != null) {
+                            var saida = '';
+                            saida += '<hr><br>';
+                            saida += '<b>Categoria ID: </b>' + data.CategoriaId + '<br>';
+                            saida += '<b>Descrição: </b>' + data.Descricao + '<br>';
+                            $("#lblMensagem").html(saida);
+                        } else {
+                            $("#lblMensagem").html("Esta categoria nao existe");
+                        }
+                    })
+
+                    .error(function (xhr, ajaxOptions, throwError) {
+                        $("#lblMensagem").html("Ocorreu um Erro");
+
+                    });
             });
 
             $("#btnAddCategorias").on("click", function () {
