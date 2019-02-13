@@ -7,21 +7,20 @@
 
 @using (Html.BeginForm())
 {
-    <button id="btnGetCategorias" class="btn-default">Buscar Categorias</button>
-    <button id="btnGetCategoria" class="btn-default">Buscar Categoria</button>
-    <button id="btnAddCategorias" class="btn-default">Adicionar Categorias</button>
-    <button id="btnUpdateCategorias" class="btn-default">Editar Categorias</button>
-    <button id="btnDeleteCategorias" class="btn-default">Deletar Categorias</button>
-    <br />
-    <br />
+    <button id="btnGetCategorias">Buscar Categorias</button>
+    <button id="btnGetCategoria">Buscar Categoria</button>
+    <button id="btnAddCategorias">ADD Categorias</button>
+    <button id="btnUpdateCategorias">Editar Categorias</button>
+    <button id="btnDeleteCategorias">Deletar Categorias</button>
+    <br /><br />
 
-    <input id="txtCategoriaId" type="text" placeholder="Id Categoria" />
-    <input id="txtDescricao" type="text" placeholder="Descrição" />
+    <input id="txtCategoriaId" Type="text" placeholder="Id Categoria" />
+    <input id="txtDescricao" Type="text" placeholder="Descrição" />
 
-    <br />
-    <br />
+    <br /><br />
 
-    <div id="lblMessagem"></div>
+    <div id="lblMensagem"></div>
+
 }
 
 @section Scripts{
@@ -56,9 +55,9 @@
 
             $("#btnGetCategoria").on("click", function () {
 
-                var categoriaId = $('#txtCategoriaId').val()
+                var categoriaId = $('#txtCategoriaId').val();
                 if (categoriaId == "") {
-                    $("#lblMensagem").html("É preciso informar um id para Categoria");
+                    $("#lblMensagem").html("É preciso informar um ID para Categoria");
                     return false;
                 }
 
@@ -73,12 +72,14 @@
                     .success(function (data) {
                         if (data != null) {
                             var saida = '';
+
                             saida += '<hr><br>';
                             saida += '<b>Categoria ID: </b>' + data.CategoriaId + '<br>';
                             saida += '<b>Descrição: </b>' + data.Descricao + '<br>';
+
                             $("#lblMensagem").html(saida);
                         } else {
-                            $("#lblMensagem").html("Esta categoria nao existe");
+                            $("#lblMensagem").html("Esta categoria não existe");
                         }
                     })
 
@@ -86,18 +87,130 @@
                         $("#lblMensagem").html("Ocorreu um Erro");
 
                     });
+                return false;
             });
 
             $("#btnAddCategorias").on("click", function () {
 
+                var descricao = $('#txtDescricao').val();
+                if (descricao == "") {
+                    $("#lblMensagem").html("É preciso informar a descrição!");
+                    return false;
+                }
+
+                var categoria = { Descricao: descricao }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/CategoriasAPI/',
+                    data: categoria,
+                    datatype: 'json',
+                    cache: false,
+                })
+
+
+                    .success(function (data) {
+
+                        var saida = '';
+
+                        saida += '<hr>Categoria Adicionada <br>';
+                        saida += '<b>Categoria ID: </b>' + data.CategoriaId + '<br>';
+                        saida += '<b>Descrição: </b>' + data.Descricao + '<br>';
+
+                        $("#lblMensagem").html(saida);
+
+                    })
+
+                    .error(function (xhr, ajaxOptions, throwError) {
+                        $("#lblMensagem").html("Ocorreu um Erro");
+
+                    });
+
+                return false;
             });
 
             $("#btnUpdateCategorias").on("click", function () {
 
+                var descricao = $('#txtDescricao').val();
+                if (descricao == "") {
+                    $("#lblMensagem").html("É preciso informar a descrição!");
+                    return false;
+                }
+
+                var categoriaId = $('#txtCategoriaId').val();
+                if (categoriaId == "") {
+                    $("#lblMensagem").html("É preciso informar um ID para Categoria");
+                    return false;
+                }
+
+                var categoria = { CategoriaId: categoriaId, Descricao: descricao }
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/CategoriasAPI/' + categoriaId,
+                    data: categoria,
+                    datatype: 'json',
+                    cache: false,
+                })
+
+
+                    .success(function (data) {
+
+                        var saida = '';
+
+                        saida += '<hr>Categoria Editada com Sucesso <br>';
+
+
+                        $("#lblMensagem").html(saida);
+
+                    })
+
+                    .error(function (xhr, ajaxOptions, throwError) {
+                        $("#lblMensagem").html("Ocorreu um Erro");
+
+                    });
+
+
+                return false;
             });
 
             $("#btnDeleteCategorias").on("click", function () {
 
+
+                var categoriaId = $('#txtCategoriaId').val();
+                if (categoriaId == "") {
+                    $("#lblMensagem").html("É preciso informar um ID para Categoria");
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/api/CategoriasAPI/' + categoriaId,
+                    datatype: 'json',
+                    cache: false,
+                })
+
+
+                    .success(function (data) {
+                        if (data != null) {
+                            var saida = '';
+
+                            saida += '<hr>Categoria excluida com sucesso!!<br>';
+                            saida += '<b>Categoria ID: </b>' + data.CategoriaId + '<br>';
+                            saida += '<b>Descrição: </b>' + data.Descricao + '<br>';
+
+                            $("#lblMensagem").html(saida);
+                        } else {
+                            $("#lblMensagem").html("Esta categoria não existe");
+                        }
+                    })
+
+                    .error(function (xhr, ajaxOptions, throwError) {
+                        $("#lblMensagem").html("Ocorreu um Erro");
+
+                    });
+
+                return false;
             });
 
             $(document).ajaxStart(function () {
@@ -107,8 +220,8 @@
             $(document).ajaxStop(function () {
                 $("#loading").hide();
             });
-        });
 
+        });
     </script>
 
 }
