@@ -1,33 +1,102 @@
-﻿@model IEnumerable<SistemaLoja.Models.Categoria>
-
+﻿
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Categorias</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Descricao)
-        </th>
-        <th></th>
-    </tr>
+@using (Html.BeginForm())
+{
+    <button id="btnGetCategorias" class="btn-default">Buscar Categorias</button>
+    <button id="btnGetCategoria" class="btn-default">Buscar Categoria</button>
+    <button id="btnAddCategorias" class="btn-default">Adicionar Categorias</button>
+    <button id="btnUpdateCategorias" class="btn-default">Editar Categorias</button>
+    <button id="btnDeleteCategorias" class="btn-default">Deletar Categorias</button>
+    <br />
+    <br />
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Descricao)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.CategoriaId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.CategoriaId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.CategoriaId })
-        </td>
-    </tr>
+    <input id="txtCategoriaId" type="text" placeholder="Id Categoria" />
+    <input id="txtDescricao" type="text" placeholder="Descrição" />
+
+    <br />
+    <br />
+
+    <div id="lblMessagem"></div>
 }
 
-</table>
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#btnGetCategorias").on("click", function () {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/CategoriasAPI',
+                    datatype: 'json',
+                    cache: false,
+                })
+
+
+                    .success(function (data) {
+                        var saida = '';
+                        for (var i = 0; i < data.length; i++) {
+                            saida += '<hr><br>';
+                            saida += '<b>Categoria ID: </b>' + data[i].CategoriaId + '<br>';
+                            saida += '<b>Descrição: </b>' + data[i].Descricao + '<br>';
+                        }
+                        $("#lblMensagem").html(saida);
+                    })
+
+                    .error(function (xhr, ajaxOptions, throwError) {
+                        $("#lblMensagem").html("Ocorreu um Erro");
+
+                    });
+                return false;
+            });
+
+            $("#btnGetCategoria").on("click", function () {
+
+            });
+
+            $("#btnAddCategorias").on("click", function () {
+
+            });
+
+            $("#btnUpdateCategorias").on("click", function () {
+
+            });
+
+            $("#btnDeleteCategorias").on("click", function () {
+
+            });
+
+            $(document).ajaxStart(function () {
+                $("#loading").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#loading").hide();
+            });
+        });
+
+    </script>
+
+}
+
+<style type="text/css">
+    #loading {
+        display: none;
+        background-color: gray;
+        z-index: 999999;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        padding-top: 300px;
+        filter: alpha(opacity=75);
+        opacity: 0.75;
+    }
+</style>
+<div id="loading"><img src="~/Images/Loader.gif" /></div>
